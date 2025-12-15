@@ -1,135 +1,90 @@
-import products from '../data/products.json';
-import countries from '../data/countries.json';
+// Import the data sources
+const products = require('../data/products.json');
+const countries = require('../data/countries.json');
 
-// Helper: map numeric score to risk color for quick executive read-outs.
-function colorFromScore(score) {
-  if (score <= 10) return 'Green';
-  if (score <= 18) return 'Yellow';
-  return 'Red';
-}
+// Define confidence mapping
+const confidenceMap = [
+    { threshold: 80, color: 'Green', tip: 'Go: Low friction, strong confidence in export feasibility.' },
+    { threshold: 60, color: 'Yellow', tip: 'Proceed: Moderate friction, implement mitigation strategies.' },
+    { threshold: 40, color: 'Red', tip: 'Caution: High friction, re-evaluate or seek specialized assistance.' },
+    { threshold: 0, color: 'Red', tip: 'Reconsider: Extreme friction, significant barriers likely exist.' },
+];
 
-// Helper: clamp between 0 and 100 to keep confidence interpretable.
-function clamp100(value) {
-  return Math.min(100, Math.max(0, Math.round(value)));
-}
+module.exports = async (req, res) => {
+    // Extract parameters from the request query
+    const { 
+        productId, 
+        countryId, 
+        weightOperational, 
+        weightRelational, 
+        scenarioMultiplier, 
+        tariffAdjustment 
+    } = req.query;
 
-export default function handler(req, res) {
-  const {
-    productId,
-    countryId,
-    weightOperational = 1,
-    weightRelational = 1,
-    scenarioMultiplier = 1,
-    tariffAdjustment = 0,
-  } = req.query;
+    // ***************************************************************
+    // NEW LOGIC: Check if the frontend is just asking for metadata (The Fix!)
+    // If productId or countryId is missing, return the lists of available products/countries.
+    // ***************************************************************
+    if (!productId || !countryId) {
+        return res.json({
+            // Only return the required fields (id and name) for the dropdowns
+            products: products.map(p => ({ id: p.id, name: p.name })),
+            countries: countries.map(c => ({ id: c.id, name: c.name })),
+        });
+    }
 
-  const product = products.find((p) => p.id === productId);
-  const country = countries.find((c) => c.id === countryId);
+    // --- Start of Existing Calculation Logic ---
 
-  if (!product || !country) {
-    return res.status(400).json({ error: 'Invalid product or country' });
-  }
+    // 1. Convert inputs to numbers
+    const wOp = parseFloat(weightOperational || 1);
+    const wRel = parseFloat(weightRelational || 1);
+    const sMult = parseFloat(scenarioMultiplier || 1);
+    const tAdj = parseFloat(tariffAdjustment || 0);
 
-  // Parse numeric inputs with defensive defaults for resiliency.
-  const wOperational = parseFloat(weightOperational) || 1;
-  const wRelational = parseFloat(weightRelational) || 1;
-  const scenario = parseFloat(scenarioMultiplier) || 1;
-  const tariffAdj = parseFloat(tariffAdjustment) || 0;
+    // 2. Find the selected data points
+    const product = products.find(p => p.id === productId);
+    const country = countries.find(c => c.id === countryId);
 
-  // Operational friction reflects execution risk; we stress it with scenario multiplier
-  // to mimic capacity crunches or regulatory friction spikes.
-  const operationalFriction =
-    (product.logistics_complexity +
-      product.perishability_index +
-      product.export_cost_index) *
-    scenario;
+    if (!product || !country) {
+        return res.status(404).json({ error: 'Product or country not found.' });
+    }
 
-  // Relational friction captures customs, communication, and culture alignment.
-  const relationalFriction =
-    country.tariff_index * (1 + tariffAdj) +
-    country.communication_style_index +
-    country.business_culture_index;
+    // 3. Extract base friction scores
+    const baseOperationalFriction = product.base_operational_friction;
+    const baseRelationalFriction = country.base_relational_friction;
+    const countryTariff = country.tariff;
 
-  const frictionIndex =
-    (operationalFriction * wOperational + relationalFriction * wRelational) /
-    (wOperational + wRelational);
+    // 4. Calculate Friction components
+    // Operational Friction: Core friction adjusted by scenario and tariff shock.
+    let operationalFriction = (baseOperationalFriction * sMult) + (countryTariff * tAdj);
+    operationalFriction = Math.max(0, operationalFriction); // Cannot be negative
 
-  const color = colorFromScore(frictionIndex);
-  const tip = buildTip({ product, country, operationalFriction, relationalFriction, color });
-  const confidence = calculateConfidence({
-    base: country.confidence,
-    frictionIndex,
-    operationalFriction,
-    relationalFriction,
-    scenario,
-    tariffAdj,
-  });
+    // Relational Friction: Friction specific to the country's difficulty.
+    const relationalFriction = baseRelationalFriction;
 
-  res.status(200).json({
-    frictionIndex: Number(frictionIndex.toFixed(2)),
-    operationalFriction: Number(operationalFriction.toFixed(2)),
-    relationalFriction: Number(relationalFriction.toFixed(2)),
-    color,
-    tip,
-    confidence,
-  });
-}
+    // 5. Calculate Weighted Friction Index
+    // This combines the operational (cost/logistics) and relational (market) friction, weighted by user focus.
+    const weightedSum = (operationalFriction * wOp) + (relationalFriction * wRel);
+    const totalWeight = wOp + wRel;
+    const frictionIndex = weightedSum / totalWeight;
 
-function buildTip({ product, country, operationalFriction, relationalFriction, color }) {
-  const dominates =
-    operationalFriction > relationalFriction ? 'operational' : 'relational';
-  const base = `${product.base_tip} ${country.base_tip}`;
+    // 6. Calculate Confidence Score (Inverted Friction)
+    // A score of 100 is no friction; 0 is maximum (10). Scales friction from 0-10.
+    const maxFrictionScore = 10;
+    const normalizedFriction = Math.min(maxFrictionScore, frictionIndex);
+    let confidence = 100 - (normalizedFriction / maxFrictionScore * 100);
+    confidence = Math.max(0, Math.round(confidence));
 
-  let emphasis = '';
-  if (dominates === 'operational') {
-    emphasis =
-      'Prioritize cold-chain reliability, EU freight booking visibility, and buffer inventory near Nordic hubs.';
-  } else {
-    emphasis =
-      'Invest early in Finnish/EU customs brokerage, align on documentation standards, and plan relationship-building touchpoints.';
-  }
+    // 7. Determine Tip and Color
+    const { color, tip } = confidenceMap.find(item => confidence >= item.threshold) || confidenceMap.slice(-1)[0];
 
-  let colorNote = '';
-  if (color === 'Green') {
-    colorNote = 'Risk is contained—move quickly but lock in compliance basics.';
-  } else if (color === 'Yellow') {
-    colorNote = 'Manageable with mitigation sequencing and clear SLAs.';
-  } else {
-    colorNote = 'High friction—enter only with staged pilots and contingency capital.';
-  }
-
-  return `${base} ${emphasis} ${colorNote}`;
-}
-
-function calculateConfidence({
-  base,
-  frictionIndex,
-  operationalFriction,
-  relationalFriction,
-  scenario,
-  tariffAdj,
-}) {
-  let confidence = base;
-
-  // Friction dampens conviction; relational issues erode trust more than ops delays.
-  const relationalShare = relationalFriction / (operationalFriction + relationalFriction);
-  confidence -= frictionIndex * (0.6 + 0.6 * relationalShare);
-
-  // Scenario multipliers indicate stress tests; heavier multipliers reduce confidence.
-  if (scenario > 1) {
-    confidence -= (scenario - 1) * 12;
-  }
-
-  // Tariff sensitivity compounds relational friction because it affects pricing trust.
-  if (tariffAdj > 0) {
-    confidence -= tariffAdj * 40 * relationalShare;
-  }
-
-  // Mild uplift if scenario is conservative (below 1) to reward slack capacity planning.
-  if (scenario < 1) {
-    confidence += (1 - scenario) * 6;
-  }
-
-  return clamp100(confidence);
-}
-
+    // 8. Return final JSON result
+    res.json({
+        frictionIndex: frictionIndex,
+        operationalFriction: operationalFriction,
+        relationalFriction: relationalFriction,
+        confidence: confidence,
+        color: color,
+        tip: tip,
+    });
+};
