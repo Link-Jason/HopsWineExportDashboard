@@ -1,0 +1,11 @@
+[
+  {
+    "id": "hops",
+    "name": "Washington Hops",
+    "logistics_complexity": 6,
+    "perishability_index": 7,
+    "export_cost_index": 5,
+    "base_tip": "Ensure temperature-controlled logistics and pre-book EU freight capacity."
+  }
+]
+
