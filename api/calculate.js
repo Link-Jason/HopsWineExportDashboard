@@ -1,9 +1,6 @@
 // Import the data sources
-const path = require('path'); // Node.js utility for handling file paths
-
-// CORRECTED PATHS: These absolute paths work reliably on Vercel's serverless environment.
-const products = require(path.join(process.cwd(), 'data', 'products.json'));
-const countries = require(path.join(process.cwd(), 'data', 'countries.json'));
+const products = require('../data/products.json');
+const countries = require('../data/countries.json');
 
 // Define confidence mapping
 const confidenceMap = [
