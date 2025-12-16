@@ -23,31 +23,27 @@ let countries = [];
 let chart;
 
 async function init() {
-    // NEW: Load ALL initial data (products/countries) from the API.
+    // Load initial metadata from the API
     await loadInitialData(); 
     
     attachListeners();
-    calculateAndRender(); // initial render with defaults
+    calculateAndRender(); // Initial render with defaults
 }
 
-// NEW FUNCTION: Fetches products and countries from the Serverless API
+// Fetches products and countries from the Serverless API
 async function loadInitialData() {
-    // Fetch from the API with NO parameters, telling the backend to only return metadata.
     const res = await fetch("/api/calculate");
     const data = await res.json();
     
-    // Extract and store data
     products = data.products || [];
     countries = data.countries || [];
 
-    // Populate the dropdowns
     populateDropdowns(products, productSelect);
     populateDropdowns(countries, countrySelect);
 }
 
-// NEW HELPER FUNCTION: Populates the <select> elements
+// Populates the <select> elements dynamically
 function populateDropdowns(dataArray, selectElement) {
-    // Add the default 'Select...' option
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
     defaultOption.textContent = "Select...";
@@ -87,7 +83,6 @@ function buildQuery() {
 }
 
 async function calculateAndRender() {
-    // Guard until data loads
     if (!productSelect.value || !countrySelect.value) return;
 
     const url = buildQuery();
@@ -142,10 +137,11 @@ function renderChart(operational, relational, color) {
     chart = new Chart(ctx, {
         type: "bar",
         data: {
-            labels: ["Operational", "Relational"],
+            // These labels now match your new HTML headings
+            labels: ["Execution Risk", "Market Risk"],
             datasets: [
                 {
-                    label: "Friction",
+                    label: "Risk Score",
                     data: [operational, relational],
                     backgroundColor: [palette[color], palette[color]],
                     borderRadius: 8,
@@ -158,14 +154,15 @@ function renderChart(operational, relational, color) {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: (ctx) => `${ctx.formattedValue} (lower is better)`,
+                        label: (ctx) => `${ctx.formattedValue} (0-10 scale)`,
                     },
                 },
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: { display: true, text: "Friction score" },
+                    max: 10, // Fixed scale for better visual comparison in BI
+                    title: { display: true, text: "Risk Level" },
                     grid: { color: "rgba(255,255,255,0.06)" },
                     ticks: { color: "#e5e7eb" },
                 },
