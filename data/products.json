@@ -1,11 +1,27 @@
 [
-  {
-    "id": "hops",
-    "name": "Washington Hops",
-    "logistics_complexity": 6,
-    "perishability_index": 7,
-    "export_cost_index": 5,
-    "base_tip": "Ensure temperature-controlled logistics and pre-book EU freight capacity."
-  }
-]
-
+    {
+      "id": "yakima_hops",
+      "name": "Yakima Valley Hops",
+      "logistics_complexity": 6,
+      "perishability_index": 7,
+      "export_cost_index": 5,
+      "base_tip": "High perishability; prioritize cold-chain integrity and pre-book EU freight capacity."
+    },
+    {
+      "id": "yakima_wine_bulk",
+      "name": "Yakima Valley Wine (Bulk Export)",
+      "logistics_complexity": 5,
+      "perishability_index": 3,
+      "export_cost_index": 4,
+      "base_tip": "Focus on high-volume logistics and utilize flexitanks to minimize per-liter transport friction."
+    },
+    {
+      "id": "yakima_wine_premium",
+      "name": "Yakima Valley Wine (Bottled / Premium)",
+      "logistics_complexity": 7,
+      "perishability_index": 5,
+      "export_cost_index": 8,
+      "base_tip": "Target premium EU distributors and ensure labeling compliance, bottle protection, and insurance coverage."
+    }
+  ]
+  

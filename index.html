@@ -12,7 +12,7 @@
     <div>
       <p class="eyebrow">BI & Risk Modeling Case Study</p>
       <h1>Hops &amp; Wine Export Friction Dashboard</h1>
-      <p class="subtitle">Washington State exporters evaluating Finland / EU market entry.</p>
+      <p class="subtitle">Yakima Valley producers evaluating Finland / EU market entry.</p>
     </div>
     <button id="printBtn" class="secondary">Print / PDF</button>
   </header>
@@ -22,28 +22,28 @@
       <h2>Scenario Inputs</h2>
       <div class="form-grid">
         <label class="field">
-          <span>Product</span>
+          <span>Product Category</span>
           <select id="productSelect"></select>
         </label>
         <label class="field">
-          <span>Country</span>
+          <span>Destination Country</span>
           <select id="countrySelect"></select>
         </label>
         <label class="field">
-          <span>Operational Weight</span>
+          <span>Execution Risk Weight</span>
           <input id="weightOperational" type="number" step="0.1" min="0.1" value="1">
         </label>
         <label class="field">
-          <span>Relational Weight</span>
+          <span>Market & Partner Risk Weight</span>
           <input id="weightRelational" type="number" step="0.1" min="0.1" value="1">
         </label>
         <label class="field">
-          <span>Scenario Multiplier</span>
+          <span>Market Stress Level</span>
           <input id="scenarioMultiplier" type="number" step="0.1" min="0.5" value="1">
-          <small>Stress test operational complexity (e.g., tighter capacity).</small>
+          <small>Stress test operational complexity (e.g., 1.0 = Normal | 2.0 = Crisis).</small>
         </label>
         <label class="field">
-          <span>Tariff Adjustment</span>
+          <span>Trade Policy Shock</span>
           <input id="tariffAdjustment" type="number" step="0.05" min="-0.5" value="0">
           <small>Models tariff shocks or relief (% as decimal).</small>
         </label>
@@ -52,35 +52,38 @@
 
     <section class="panel results">
       <div class="kpi">
-        <p class="label">Friction Index</p>
+        <p class="label">Market Entry Risk Index</p>
         <p id="frictionIndex" class="value">--</p>
         <p id="colorLabel" class="badge">Awaiting input</p>
       </div>
       <div class="kpi">
-        <p class="label">Operational Friction</p>
+        <p class="label">Execution Risk</p>
         <p id="operationalFriction" class="value">--</p>
       </div>
       <div class="kpi">
-        <p class="label">Relational Friction</p>
+        <p class="label">Market & Partner Risk</p>
         <p id="relationalFriction" class="value">--</p>
       </div>
       <div class="kpi">
         <p class="label">Confidence</p>
         <p id="confidence" class="value">--</p>
         <p class="helper">80–100: proceed; 60–79: mitigate; 40–59: caution; &lt;40: reconsider.</p>
+        <p class="helper" style="margin-top: 12px; opacity: 0.7; font-style: italic; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px;">
+          Scores are relative indicators designed for comparison and prioritization, not absolute forecasts.
+        </p>
       </div>
     </section>
 
     <section class="panel chart-panel">
       <div class="panel-header">
-        <h2>Operational vs Relational Friction</h2>
+        <h2>Execution vs Market Risk</h2>
         <p class="helper">Frames logistics vs relationship risk to guide mitigation sequencing.</p>
       </div>
-      <canvas id="frictionChart" aria-label="Operational vs Relational Friction bar chart"></canvas>
+      <canvas id="frictionChart" aria-label="Execution vs Market Risk bar chart"></canvas>
     </section>
 
     <section class="panel tip-panel">
-      <h2>Analyst Guidance</h2>
+      <h2>Decision Guidance</h2>
       <p id="tip" class="tip-text">Adjust inputs to generate scenario-specific guidance.</p>
     </section>
   </main>
@@ -92,4 +95,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-

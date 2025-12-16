@@ -11,9 +11,7 @@ export default function handler(req, res) {
     tariffAdjustment = 0
   } = req.query;
 
-  // -------------------------------
   // 1. METADATA MODE (for dropdowns)
-  // -------------------------------
   if (!productId || !countryId) {
     return res.status(200).json({
       products,
@@ -21,9 +19,7 @@ export default function handler(req, res) {
     });
   }
 
-  // -------------------------------
   // 2. CALCULATION MODE
-  // -------------------------------
   const product = products.find(p => p.id === productId);
   const country = countries.find(c => c.id === countryId);
 
@@ -31,46 +27,51 @@ export default function handler(req, res) {
     return res.status(400).json({ error: "Invalid product or country" });
   }
 
-  // Operational friction reflects logistics + cost complexity
+  // Calculation for Execution Risk (Logistics + Costs)
   const operationalFriction =
-    (product.logistics_complexity +
+    ((product.logistics_complexity +
       product.perishability_index +
-      product.export_cost_index) /
-    3 *
+      product.export_cost_index) / 3) *
     weightOperational *
     scenarioMultiplier;
 
-  // Relational friction reflects tariff + cultural alignment
+  // Calculation for Market & Partner Risk (Tariffs + Culture)
   const relationalFriction =
-    (country.tariff_index +
+    ((country.tariff_index +
       country.communication_style_index +
-      country.business_culture_index) /
-    3 *
+      country.business_culture_index) / 3) *
     weightRelational *
     (1 + Number(tariffAdjustment));
 
-  const frictionIndex =
-    (operationalFriction + relationalFriction) / 2;
+  const frictionIndex = (operationalFriction + relationalFriction) / 2;
 
-  // Confidence tightens as friction rises
+  // Confidence Score Logic
   const confidence = Math.max(
     0,
-    Math.round(
-      country.confidence -
-        frictionIndex * 5
-    )
+    Math.round(country.confidence - frictionIndex * 5)
   );
 
   let color = "Green";
-  if (frictionIndex >= 7) color = "Red";
-  else if (frictionIndex >= 4) color = "Yellow";
+  if (frictionIndex >= 7.5) color = "Red";
+  else if (frictionIndex >= 4.5) color = "Yellow";
 
-  const tip =
-    frictionIndex < 4
-      ? "Proceed with standard export planning."
-      : frictionIndex < 7
-      ? product.base_tip
-      : `${product.base_tip} ${country.base_tip}`;
+  // 3. STRATEGIC DECISION GUIDANCE LOGIC
+  // This turns raw data into "Senior Analyst" advice.
+  let tip = product.base_tip;
+
+  if (Number(scenarioMultiplier) >= 1.7) {
+    // High Market Stress Advice
+    tip = `CRITICAL STRESS: Port congestion or global instability detected. For ${product.name}, prioritize Seattle-Tacoma terminal pre-clearing to avoid detention fees.`;
+  } else if (color === "Red") {
+    // High Friction Advice
+    tip = `HIGH RISK: ${product.base_tip} Additionally, the combined Market & Execution risk is too high for standard entry. Consider a joint-venture partner in ${country.name} to share the friction.`;
+  } else if (color === "Yellow") {
+    // Moderate Friction Advice
+    tip = `MITIGATION REQUIRED: ${product.base_tip}`;
+  } else {
+    // Low Friction Advice
+    tip = `STRATEGIC GO: Risk levels are optimal. Leverage Yakima Valley's regional prestige to negotiate favorable placement in ${country.name} markets.`;
+  }
 
   return res.status(200).json({
     operationalFriction,
