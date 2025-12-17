@@ -27,21 +27,27 @@ export default function handler(req, res) {
     return res.status(400).json({ error: "Invalid product or country" });
   }
 
+  // --- THE FIX: Force numeric conversion to prevent NaN errors ---
+  const wOp = Number(weightOperational);
+  const wRel = Number(weightRelational);
+  const wScen = Number(scenarioMultiplier);
+  const wTariff = Number(tariffAdjustment);
+
   // Calculation for Execution Risk (Logistics + Costs)
   const operationalFriction =
     ((product.logistics_complexity +
       product.perishability_index +
       product.export_cost_index) / 3) *
-    weightOperational *
-    scenarioMultiplier;
+    wOp *
+    wScen;
 
   // Calculation for Market & Partner Risk (Tariffs + Culture)
   const relationalFriction =
     ((country.tariff_index +
       country.communication_style_index +
       country.business_culture_index) / 3) *
-    weightRelational *
-    (1 + Number(tariffAdjustment));
+    wRel *
+    (1 + wTariff);
 
   const frictionIndex = (operationalFriction + relationalFriction) / 2;
 
@@ -56,20 +62,15 @@ export default function handler(req, res) {
   else if (frictionIndex >= 4.5) color = "Yellow";
 
   // 3. STRATEGIC DECISION GUIDANCE LOGIC
-  // This turns raw data into "Senior Analyst" advice.
   let tip = product.base_tip;
 
-  if (Number(scenarioMultiplier) >= 1.7) {
-    // High Market Stress Advice
+  if (wScen >= 1.7) {
     tip = `CRITICAL STRESS: Port congestion or global instability detected. For ${product.name}, prioritize Seattle-Tacoma terminal pre-clearing to avoid detention fees.`;
   } else if (color === "Red") {
-    // High Friction Advice
     tip = `HIGH RISK: ${product.base_tip} Additionally, the combined Market & Execution risk is too high for standard entry. Consider a joint-venture partner in ${country.name} to share the friction.`;
   } else if (color === "Yellow") {
-    // Moderate Friction Advice
     tip = `MITIGATION REQUIRED: ${product.base_tip}`;
   } else {
-    // Low Friction Advice
     tip = `STRATEGIC GO: Risk levels are optimal. Leverage Yakima Valley's regional prestige to negotiate favorable placement in ${country.name} markets.`;
   }
 
