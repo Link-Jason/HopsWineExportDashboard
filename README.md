@@ -21,16 +21,13 @@ This dashboard provides a repeatable risk framework and scenario testing to help
 ## **How the Friction Index Works**
 The model calculates a weighted average of **Operational** and **Relational Friction**:
 
-Formula for Market Entry Risk Index (If):
-If = ((Operational_Friction * Weight_O) + (Relational_Friction * Weight_R)) / (Weight_O + Weight_R)
+$$
+I_f = \frac{(O \times w_o) + (R \times w_r)}{w_o + w_r}
+$$
 
-Where:
-- Operational_Friction = (Base_Ops * Stress_Multiplier)
-- Relational_Friction = (Base_Relational + (Base_Relational * Tariff_Shock))
-
-- **Operational Friction:** Logistics, Perishability, Export Cost, adjusted by a Scenario Multiplier.
-- **Relational Friction:** Tariffs (including shocks), Communication norms, Cultural distance.
-- **Weights:** Analyst-defined to reflect business priorities (e.g., higher sensitivity to logistics).
+- **Operational Friction ($O$):** Logistics, Perishability, Export Cost, adjusted by a Scenario Multiplier.  
+- **Relational Friction ($R$):** Tariffs (including shocks), Communication norms, Cultural distance.  
+- **Weights ($w_o$, $w_r$):** Analyst-defined to reflect business priorities.
 
 ---
 
@@ -48,7 +45,7 @@ Where:
 - **Scenario Analysis:** Stress-test operational load (capacity limits, perishability) and simulate trade policy shocks (tariff hikes/reductions).  
 - **Confidence Scoring:** Dynamic metric decays as relational friction dominates, reflecting real-world trust dynamics.  
 - **Visualization:** Chart.js bar chart shows Execution vs Market Risk for immediate prioritization.  
-- **Actionable Reporting:** On-screen strategic guidance and a built-in **Print / PDF export** for stakeholder reporting.
+- **Decision Guidance:** Single, actionable tip paragraph plus confidence score.
 
 ---
 
@@ -62,10 +59,10 @@ Where:
 ---
 
 ## **Professional Competencies Demonstrated**
-- **Risk Modeling:** Scenario multipliers, tariff sensitivity, weighted index calculations.
-- **Decision Support:** Translates raw data into actionable guidance.
-- **Pragmatic Delivery:** Lightweight, portable, deployable MVP.
-- **Communication:** Inline comments and UI copy explain why each lever exists.
+- **Risk Modeling:** Scenario multipliers, tariff sensitivity, weighted index calculations  
+- **Decision Support:** Translates raw data into actionable guidance  
+- **Pragmatic Delivery:** Lightweight, portable, deployable MVP  
+- **Communication:** Inline comments and UI copy explain why each lever exists
 
 ---
 
