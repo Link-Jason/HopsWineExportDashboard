@@ -48,12 +48,16 @@
         <label class="field">
           <span>Market Stress Level</span>
           <input id="scenarioMultiplier" type="number" step="0.1" min="0.5" value="1">
-          <small>Stress test operational complexity (e.g., 1.0 = Normal | 2.0 = Crisis).</small>
+          <small>Stress test logistics and execution risk 
+            (1.0 = normal conditions, 2.0 = major disruption).</small>
         </label>
         <label class="field">
           <span>Trade Policy Shock</span>
           <input id="tariffAdjustment" type="number" step="0.05" min="-0.5" value="0">
-          <small>Models tariff shocks or relief (% as decimal).</small>
+          <small>
+            Simulates tariff increases or reductions 
+            (e.g., 0.10 = +10%, -0.10 = -10%).
+          </small>
         </label>
       </div>
     </section>
