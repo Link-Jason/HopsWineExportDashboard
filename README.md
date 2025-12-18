@@ -1,49 +1,77 @@
 # Hops & Wine Export Friction Dashboard (Finland / EU)
+🔗 **Live Demo:** [https://yourapp.vercel.app](https://yourapp.vercel.app)
 
-Portfolio-ready BI and risk modeling case study that shows how a single analyst can frame a trade decision, quantify friction, and ship a lightweight decision-support tool to Vercel. The focus is business judgment, not framework ceremony.
+Portfolio-ready BI & risk modeling case study demonstrating how a single analyst can quantify friction and ship a lightweight decision-support tool. This project emphasizes business judgment and analytical ownership over framework complexity.
 
-## Project Overview
-- Single-user SaaS-style MVP that scores export friction for Washington State hops and wine exporters considering Finland / EU.
-- Combines operational and relational risk into a Friction Index with contextual guidance, confidence score, and quick visualization.
-- Built to demonstrate analytical ownership: clear assumptions, explicit weights, and pragmatic shipping of a serverless + static front end.
+---
 
-## Business Problem
-Exporters weigh hard-to-compare factors: logistics reliability, perishability, tariffs, communication norms, and culture. Without a structured view, teams over-index on anecdotes. This dashboard offers a repeatable risk frame and scenario testing so leaders can decide if/when to proceed, and where to mitigate first.
+## **Project Overview**
+- Single-user SaaS-style MVP scoring export friction for Washington State hops and wine exporters considering Finland / EU.
+- Combines operational and relational risk into a **Friction Index** with guidance, confidence score, and visualization.
+- Demonstrates clear assumptions, explicit weights, and pragmatic shipping of a serverless + static frontend.
 
-## How the Friction Index Works
-- Operational Friction = (Logistics + Perishability + Export Cost) × Scenario Multiplier.
-- Relational Friction = Tariff × (1 + Tariff Adjustment) + Communication + Culture.
-- Friction Index blends both using analyst-chosen weights:  
-  `((Operational × weightOperational) + (Relational × weightRelational)) / (weightOperational + weightRelational)`
-- Color bands keep interpretation simple: Green ≤ 10, Yellow 11–18, Red > 18.
+---
 
-## Operational vs Relational Risk
-- Operational covers execution risk: capacity, cold chain, and direct cost exposure.
-- Relational covers trust-building risk: tariff drag, documentation fit, communication style, and culture distance.
-- Splitting them lets leaders sequence mitigation: shore up the dominant side first, instead of spreading effort thinly.
+## **Business Problem**
+Exporters face diverse, hard-to-compare risks: logistics reliability, perishability, tariffs, and cultural/communication factors. Without a structured view, decision-making often relies on anecdotes.  
+This dashboard provides a repeatable risk framework and scenario testing to help leaders prioritize mitigation efforts and make informed entry decisions.
 
-## Scenario Analysis
-- Scenario Multiplier stress-tests operational load (e.g., tighter freight capacity).
-- Tariff Adjustment models shocks or relief to duties.
-- Weights let an analyst mirror leadership priorities (e.g., CFO may upweight relational if pricing trust is fragile).
-- Output includes confidence that decays more when relational friction dominates—mirrors real buyer trust dynamics.
+---
 
-## Tech Stack
-- Frontend: Vanilla HTML/CSS/JS, Chart.js for quick BI visuals.
-- Backend: Vercel serverless function (`/api/calculate`) using ES modules.
-- Data: Simple JSON seeds for products and countries.
-- Hosting: Drop the repo into Vercel; no build step required.
+## **How the Friction Index Works**
+The model calculates a weighted average of **Operational** and **Relational Friction**:
 
-## What This Project Demonstrates Professionally
-- Business framing: Defines friction in operational vs relational terms; explains thresholds and weights.
-- Risk modeling: Scenario multipliers, tariff sensitivity, and confidence decay tied to friction dominance.
-- Decision support: Outputs one clear tip paragraph plus a confidence score with plain-language tiers.
-- Pragmatic delivery: Minimal stack, serverless API, and portable static frontend—ready for Vercel.
-- Communication: Inline comments and UI copy explain why each lever exists, not just how it works.
+$$
+I_f = \frac{(O \times w_o) + (R \times w_r)}{w_o + w_r}
+$$
 
-## Future Enhancements
-- Add multiple EU markets and product SKUs; compare portfolios side-by-side.
-- Persist scenarios for sharing; export PDF with branded layout.
-- Enrich with real tariff datasets and logistics benchmarks; add sensitivity tornado charts.
-- Introduce authentication if moved beyond single-user scope.
+- **Operational Friction ($O$):** Logistics, Perishability, Export Cost, adjusted by a Scenario Multiplier.  
+- **Relational Friction ($R$):** Tariffs (including shocks), Communication norms, Cultural distance.  
+- **Weights ($w_o$, $w_r$):** Analyst-defined to reflect business priorities.
 
+---
+
+## **Risk Thresholds**
+
+| Index Score | Status | Business Implication |
+|------------|--------|--------------------|
+| 0 – 10    | 🟢 Green | Low friction; leverage regional prestige for market entry. |
+| 11 – 18   | 🟡 Yellow | Moderate friction; prioritize mitigation in the dominant risk category. |
+| 19+       | 🔴 Red | High friction; reconsider strategy or seek significant local partnerships. |
+
+---
+
+## **Core Features**
+- **Scenario Analysis:** Stress-test operational load (capacity limits, perishability) and simulate trade policy shocks (tariff hikes/reductions).  
+- **Confidence Scoring:** Dynamic metric decays as relational friction dominates, reflecting real-world trust dynamics.  
+- **Visualization:** Chart.js bar chart shows Execution vs Market Risk for immediate prioritization.  
+- **Decision Guidance:** Single, actionable tip paragraph plus confidence score.
+
+---
+
+## **Tech Stack**
+- **Frontend:** Vanilla HTML5, CSS3, JavaScript (ES6+)  
+- **Visuals:** Chart.js for interactive BI visualizations  
+- **Backend:** Serverless function on Vercel (`/api/calculate`)  
+- **Data:** JSON seeds for products and countries  
+- **Deployment:** Vercel; zero build step required  
+
+---
+
+## **Professional Competencies Demonstrated**
+- **Risk Modeling:** Scenario multipliers, tariff sensitivity, weighted index calculations  
+- **Decision Support:** Translates raw data into actionable guidance  
+- **Pragmatic Delivery:** Lightweight, portable, deployable MVP  
+- **Communication:** Inline comments and UI copy explain why each lever exists
+
+---
+
+## **Future Enhancements**
+- Expand to multiple EU markets and SKUs; compare portfolios side-by-side  
+- Persist scenarios for sharing; export PDF reports  
+- Integrate real tariff datasets and logistics benchmarks  
+- Add authentication for multi-user use  
+
+---
+
+*Note: Risk scores incorporate **country-specific baseline friction** (tariffs, communication norms, regulatory hurdles) as an environmental constant.*
