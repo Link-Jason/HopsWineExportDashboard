@@ -21,13 +21,16 @@ This dashboard provides a repeatable risk framework and scenario testing to help
 ## **How the Friction Index Works**
 The model calculates a weighted average of **Operational** and **Relational Friction**:
 
-$$
-I_f = \frac{(O \times w_o) + (R \times w_r)}{w_o + w_r}
-$$
+Formula for Market Entry Risk Index (If):
+If = ((Operational_Friction * Weight_O) + (Relational_Friction * Weight_R)) / (Weight_O + Weight_R)
 
-- **Operational Friction ($O$):** Logistics, Perishability, Export Cost, adjusted by a Scenario Multiplier.  
-- **Relational Friction ($R$):** Tariffs (including shocks), Communication norms, Cultural distance.  
-- **Weights ($w_o$, $w_r$):** Analyst-defined to reflect business priorities.
+Where:
+- Operational_Friction = (Base_Ops * Stress_Multiplier)
+- Relational_Friction = (Base_Relational + (Base_Relational * Tariff_Shock))
+
+- **Operational Friction:** Logistics, Perishability, Export Cost, adjusted by a Scenario Multiplier.
+- **Relational Friction:** Tariffs (including shocks), Communication norms, Cultural distance.
+- **Weights:** Analyst-defined to reflect business priorities (e.g., higher sensitivity to logistics).
 
 ---
 
@@ -45,7 +48,7 @@ $$
 - **Scenario Analysis:** Stress-test operational load (capacity limits, perishability) and simulate trade policy shocks (tariff hikes/reductions).  
 - **Confidence Scoring:** Dynamic metric decays as relational friction dominates, reflecting real-world trust dynamics.  
 - **Visualization:** Chart.js bar chart shows Execution vs Market Risk for immediate prioritization.  
-- **Decision Guidance:** Single, actionable tip paragraph plus confidence score.
+- **Actionable Reporting:** On-screen strategic guidance and a built-in **Print / PDF export** for stakeholder reporting.
 
 ---
 
@@ -59,18 +62,18 @@ $$
 ---
 
 ## **Professional Competencies Demonstrated**
-- **Risk Modeling:** Scenario multipliers, tariff sensitivity, weighted index calculations  
-- **Decision Support:** Translates raw data into actionable guidance  
-- **Pragmatic Delivery:** Lightweight, portable, deployable MVP  
-- **Communication:** Inline comments and UI copy explain why each lever exists
+- **Risk Modeling:** Scenario multipliers, tariff sensitivity, weighted index calculations.
+- **Decision Support:** Translates raw data into actionable guidance.
+- **Pragmatic Delivery:** Lightweight, portable, deployable MVP.
+- **Communication:** Inline comments and UI copy explain why each lever exists.
 
 ---
 
 ## **Future Enhancements**
-- Expand to multiple EU markets and SKUs; compare portfolios side-by-side  
-- Persist scenarios for sharing; export PDF reports  
-- Integrate real tariff datasets and logistics benchmarks  
-- Add authentication for multi-user use  
+- **Multi-Market Comparison:** Side-by-side portfolio evaluation for other EU markets (Sweden, Norway, etc.).
+- **Live Data Integration:** Connect to real-time API feeds for live logistics benchmarks and EU tariff schedules.
+- **Persistence & Collaboration:** Add a database layer to save scenarios and generate unique URLs for sharing.
+- **Advanced Sensitivity Analysis:** Introduce "Tornado Charts" to visualize which specific input has the highest impact on the Friction Index.
 
 ---
 
